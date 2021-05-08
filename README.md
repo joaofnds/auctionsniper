@@ -1,8 +1,7 @@
 # auctionsniper
-
+AuctionSniper application from Growing Object Oriented Software, Guided By Tests (GOOS)
 
 ## Openfire setup
-
 1. Start the Openfire server
 ```sh
 sh ./start-openfire.sh
