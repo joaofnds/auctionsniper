@@ -8,7 +8,7 @@ public class AuctionSniperEndToEndTest {
     private final ApplicationRunner application = new ApplicationRunner();
 
     @Test
-    public void sniperJoinsAuctionUntilActionCloses() {
+    public void sniperJoinsAuctionUntilActionCloses() throws Exception {
         auction.startSellingItem();
         application.startBiddingIn(auction);
         auction.hasReceivedJoinRequestFromSniper();
