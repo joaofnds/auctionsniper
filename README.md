@@ -1,5 +1,5 @@
 # auctionsniper
-AuctionSniper application from [Growing Object Oriented Software, Guided By Tests (GOOS)](Growing Object-Oriented Software Guided by Tests)
+AuctionSniper application from [Growing Object Oriented Software, Guided By Tests (GOOS)](http://www.growing-object-oriented-software.com/)
 
 ## Openfire setup
 1. Start the Openfire server
