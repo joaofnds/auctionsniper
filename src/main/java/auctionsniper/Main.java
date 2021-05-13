@@ -9,10 +9,7 @@ import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class Main implements AuctionEventListener {
-    public static final String JOIN_COMMAND_FORMAT = "";
-    public static final String BID_COMMAND_FORMAT = "SOLVersion: 1.1; Command: BID; Price: %d;";
-
+public class Main {
     private static final int ARG_HOSTNAME = 0;
     private static final int ARG_USERNAME = 1;
     private static final int ARG_PASSWORD = 2;
@@ -50,11 +47,18 @@ public class Main implements AuctionEventListener {
 
     private void joinAuction(XMPPConnection connection, String itemID) throws XMPPException {
         disconnectWhenUICloses(connection);
-        Chat chat = connection.getChatManager().createChat(
-                auctionId(itemID, connection),
-                new AuctionMessageTranslator(this));
+
+        Chat chat = connection.getChatManager().createChat(auctionId(itemID, connection), null);
         this.notToBeGCd = chat;
-        chat.sendMessage(JOIN_COMMAND_FORMAT);
+
+        Auction auction = new XMPPAuction(chat);
+        chat.addMessageListener(
+                new AuctionMessageTranslator(
+                        new AuctionSniper(
+                                auction,
+                                new SniperStateDisplayer())));
+
+        auction.join();
     }
 
     private void disconnectWhenUICloses(XMPPConnection connection) {
@@ -70,12 +74,20 @@ public class Main implements AuctionEventListener {
         SwingUtilities.invokeAndWait(() -> ui = new MainWindow());
     }
 
-    @Override
-    public void auctionClosed() {
-        SwingUtilities.invokeLater(() -> ui.showStatus(MainWindow.STATUS_LOST));
-    }
+    public class SniperStateDisplayer implements SniperListener {
 
-    @Override
-    public void currentPrice(int currentPrice, int increment) {
+        @Override
+        public void sniperLost() {
+            showStatus(MainWindow.STATUS_LOST);
+        }
+
+        @Override
+        public void sniperBidding() {
+            showStatus(MainWindow.STATUS_BIDDING);
+        }
+
+        private void showStatus(final String status) {
+            SwingUtilities.invokeLater(() -> ui.showStatus(status));
+        }
     }
 }
