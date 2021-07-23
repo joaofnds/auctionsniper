@@ -6,7 +6,7 @@ import org.jivesoftware.smack.XMPPException;
 import static java.lang.String.format;
 
 public class XMPPAuction implements Auction {
-    public static final String JOIN_COMMAND_FORMAT = "";
+    public static final String JOIN_COMMAND_FORMAT = "SOLVersion: 1.1; Command: JOIN;";
     public static final String BID_COMMAND_FORMAT = "SOLVersion: 1.1; Command: BID; Price: %d;";
 
     private final Chat chat;
