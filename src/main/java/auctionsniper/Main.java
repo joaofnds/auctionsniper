@@ -33,12 +33,7 @@ public class Main {
         Main main = new Main();
         XMPPConnection connection = connection(args[ARG_HOSTNAME], args[ARG_USERNAME], args[ARG_PASSWORD]);
         main.disconnectWhenUICloses(connection);
-        main.joinAuction(connection, args[ARG_ITEM_ID]);
-
-        for (int i = 3; i < args.length; i++) {
-            String itemID = args[i];
-            main.joinAuction(connection, itemID);
-        }
+        main.addUserRequestListenerFor(connection);
     }
 
     private static XMPPConnection connection(String hostname, String username, String password) throws XMPPException {
@@ -52,24 +47,21 @@ public class Main {
         return String.format(AUCTION_ID_FORMAT, itemID, connection.getServiceName());
     }
 
-    private void joinAuction(XMPPConnection connection, String itemID) throws Exception {
-        safelyAddItemToModel(itemID);
-        disconnectWhenUICloses(connection);
-
-        final Chat chat = connection.getChatManager().createChat(auctionId(itemID, connection), null);
-        notToBeGCd.add(chat);
-
-        Auction auction = new XMPPAuction(chat);
-        chat.addMessageListener(
-                new AuctionMessageTranslator(
-                        connection.getUser(),
-                        new AuctionSniper(
-                                auction,
-                                itemID,
-                                new SwingThreadSniperListener(snipers))));
-
-        auction.join();
+    private void addUserRequestListenerFor(final XMPPConnection connection) {
+        ui.addUserRequestListener(new UserRequestListener() {
+            public void joinAuction(String itemId) {
+                snipers.addSniper(SniperSnapshot.joining(itemId));
+                Chat chat = connection.getChatManager()
+                        .createChat(auctionId(itemId, connection), null);
+                notToBeGCd.add(chat);
+                Auction auction = new XMPPAuction(chat);
+                chat.addMessageListener(
+                        new AuctionMessageTranslator(connection.getUser(), new AuctionSniper(auction, itemId, new SwingThreadSniperListener(snipers))));
+                auction.join();
+            }
+        });
     }
+
 
     private void safelyAddItemToModel(String itemID) throws Exception {
         SwingUtilities.invokeAndWait(() -> snipers.addSniper(SniperSnapshot.joining(itemID)));

@@ -3,7 +3,7 @@ package auctionsniper.ui;
 import auctionsniper.SniperListener;
 import auctionsniper.SniperSnapshot;
 import auctionsniper.SniperState;
-import com.objogate.exception.Defect;
+import auctionsniper.utils.Defect;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
