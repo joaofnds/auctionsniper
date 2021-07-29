@@ -1,5 +1,6 @@
 package auctionsniper.ui;
 
+import auctionsniper.SniperPortfolio;
 import auctionsniper.UserRequestListener;
 
 import javax.swing.*;
@@ -17,16 +18,14 @@ public class MainWindow extends JFrame {
     public static final String JOIN_BUTTON_NAME = "join auction";
     private static final String SNIPERS_TABLE_NAME = "SNIPERS_TABLE_NAME";
 
-    private final SnipersTableModel snipers;
     private final Set<UserRequestListener> userRequests = new HashSet<>();
 
     private final JTextField itemIDField = new JTextField();
 
-    public MainWindow(SnipersTableModel snipers) {
+    public MainWindow(SniperPortfolio portfolio) {
         super(APPLICATION_TITLE);
-        this.snipers = snipers;
         setName(APPLICATION_TITLE);
-        fillContentPane(makeSnipersTable(), makeControls());
+        fillContentPane(makeSnipersTable(portfolio), makeControls());
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
@@ -64,13 +63,15 @@ public class MainWindow extends JFrame {
         contentPane.add(new JScrollPane(snipersTable), BorderLayout.CENTER);
     }
 
-    private JTable makeSnipersTable() {
-        final JTable snipersTable = new JTable(snipers);
+    private JTable makeSnipersTable(SniperPortfolio portfolio) {
+        SnipersTableModel model = new SnipersTableModel();
+        portfolio.addPortfolioListener(model);
+        final JTable snipersTable = new JTable(model);
         snipersTable.setName(SNIPERS_TABLE_NAME);
         return snipersTable;
     }
 
     public void addUserRequestListener(UserRequestListener listener) {
-        this.userRequests.add(listener);
+        userRequests.add(listener);
     }
 }

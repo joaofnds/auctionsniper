@@ -1,5 +1,6 @@
 package auctionsniper;
 
+import auctionsniper.xmpp.XMPPAuction;
 import org.hamcrest.Matcher;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.MessageListener;
@@ -22,7 +23,7 @@ public class FakeAuctionServer {
     private static final String AUCTION_PASSWORD = "auction";
 
     private final SingleMessageListener messageListener = new SingleMessageListener();
-    private final XMPPConnection connection;
+    public final XMPPConnection connection;
     private final String itemId;
     private Chat currentChat;
 
@@ -50,7 +51,7 @@ public class FakeAuctionServer {
         connection.disconnect();
     }
 
-    public String getItemId() {
+    public String getItemID() {
         return itemId;
     }
 
