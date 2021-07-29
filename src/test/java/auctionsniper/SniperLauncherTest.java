@@ -22,10 +22,13 @@ public class SniperLauncherTest {
             allowing(auctionHouse).auctionFor(itemID);
             will(returnValue(auction));
 
-            oneOf(auction).addEventListener(with(any(AuctionSniper.class))); when(auctionState.is("not joined"));
-            oneOf(sniperCollector).addSniper(with(any(AuctionSniper.class))); when(auctionState.is("not joined"));
+            oneOf(auction).addEventListener(with(any(AuctionSniper.class)));
+            when(auctionState.is("not joined"));
+            oneOf(sniperCollector).addSniper(with(any(AuctionSniper.class)));
+            when(auctionState.is("not joined"));
 
-            one(auction).join(); then(auctionState.is("joined"));
+            one(auction).join();
+            then(auctionState.is("joined"));
         }});
 
         launcher.joinAuction(itemID);
