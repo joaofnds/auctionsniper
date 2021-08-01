@@ -4,6 +4,8 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import static auctionsniper.SniperState.*;
+
 public class SniperSnapshot {
     public final String itemId;
     public final int lastPrice;
@@ -18,19 +20,23 @@ public class SniperSnapshot {
     }
 
     public static SniperSnapshot joining(String itemId) {
-        return new SniperSnapshot(itemId, 0, 0, SniperState.JOINING);
+        return new SniperSnapshot(itemId, 0, 0, JOINING);
     }
 
     public SniperSnapshot winning(int newLastPrice) {
-        return new SniperSnapshot(itemId, newLastPrice, lastBid, SniperState.WINNING);
+        return new SniperSnapshot(itemId, newLastPrice, lastBid, WINNING);
     }
 
     public SniperSnapshot bidding(int newLastPrice, int newLastBid) {
-        return new SniperSnapshot(itemId, newLastPrice, newLastBid, SniperState.BIDDING);
+        return new SniperSnapshot(itemId, newLastPrice, newLastBid, BIDDING);
     }
 
     public SniperSnapshot closed() {
         return new SniperSnapshot(itemId, lastPrice, lastBid, state.whenAuctionClosed());
+    }
+
+    public SniperSnapshot losing(int newLastPrice) {
+        return new SniperSnapshot(itemId, newLastPrice, lastBid, LOSING);
     }
 
     @Override

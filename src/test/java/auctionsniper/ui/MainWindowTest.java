@@ -1,6 +1,7 @@
 package auctionsniper.ui;
 
 import auctionsniper.AuctionSniperDriver;
+import auctionsniper.Item;
 import auctionsniper.SniperPortfolio;
 import com.objogate.wl.swing.probe.ValueMatcherProbe;
 import org.junit.Test;
@@ -16,12 +17,12 @@ public class MainWindowTest {
     @Test
     public void makesUserRequestWhenJoinButtonClicked() {
         System.setProperty("com.objogate.wl.keyboard", "Mac-GB");
-        final ValueMatcherProbe<String> buttonProbe =
-                new ValueMatcherProbe<>(equalTo("itemID"), "join request");
+        final ValueMatcherProbe<Item> itemProbe =
+                new ValueMatcherProbe<>(equalTo(new Item("itemID", 789)), "join request");
 
-        mainWindow.addUserRequestListener(buttonProbe::setReceivedValue);
+        mainWindow.addUserRequestListener(itemProbe::setReceivedValue);
 
-        driver.startBiddingFor("itemID");
-        driver.check(buttonProbe);
+        driver.startBiddingFor("itemID", 789);
+        driver.check(itemProbe);
     }
 }

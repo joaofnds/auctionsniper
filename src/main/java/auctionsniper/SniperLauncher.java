@@ -11,9 +11,9 @@ public class SniperLauncher implements UserRequestListener {
         this.auctionHouse = auctionHouse;
     }
 
-    public void joinAuction(String itemID) {
-        Auction auction = auctionHouse.auctionFor(itemID);
-        AuctionSniper sniper = new AuctionSniper(itemID, auction);
+    public void joinAuction(Item item) {
+        Auction auction = auctionHouse.auctionFor(item);
+        AuctionSniper sniper = new AuctionSniper(item, auction);
         auction.addEventListener(sniper);
         collector.addSniper(sniper);
         auction.join();

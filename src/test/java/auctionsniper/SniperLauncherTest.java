@@ -17,9 +17,10 @@ public class SniperLauncherTest {
 
     @Test
     public void addsNewSniperToCollectionAndThenJoinsAuction() {
-        final String itemID = "item 123";
+        final Item item = new Item("item 123", 789);
+
         context.checking(new Expectations() {{
-            allowing(auctionHouse).auctionFor(itemID);
+            allowing(auctionHouse).auctionFor(item);
             will(returnValue(auction));
 
             oneOf(auction).addEventListener(with(any(AuctionSniper.class)));
@@ -31,6 +32,6 @@ public class SniperLauncherTest {
             then(auctionState.is("joined"));
         }});
 
-        launcher.joinAuction(itemID);
+        launcher.joinAuction(item);
     }
 }
