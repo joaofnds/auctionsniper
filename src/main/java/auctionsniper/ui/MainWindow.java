@@ -16,6 +16,7 @@ public class MainWindow extends JFrame {
     public static final String STATUS_LOSING = "Losing";
     public static final String STATUS_WON = "Won";
     public static final String STATUS_LOST = "Lost";
+    public static final String STATUS_FAILED = "Failed";
 
     public static final String APPLICATION_TITLE = "Auction Sniper";
     public static final String NEW_ITEM_ID_NAME = "item id";

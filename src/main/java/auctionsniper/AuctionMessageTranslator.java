@@ -1,5 +1,6 @@
 package auctionsniper;
 
+import auctionsniper.xmpp.XMPPFailureReporter;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.packet.Message;
@@ -10,15 +11,27 @@ import java.util.Map;
 public class AuctionMessageTranslator implements MessageListener {
     private final AuctionEventListener listener;
     private final String sniperId;
+    private final XMPPFailureReporter failureReporter;
 
-    public AuctionMessageTranslator(String sniperId, AuctionEventListener listener) {
+    public AuctionMessageTranslator(String sniperId, AuctionEventListener listener, XMPPFailureReporter failureReporter) {
         this.sniperId = sniperId;
         this.listener = listener;
+        this.failureReporter = failureReporter;
     }
 
     @Override
     public void processMessage(Chat chat, Message message) {
-        AuctionEvent event = AuctionEvent.from(message.getBody());
+        var messageBody = message.getBody();
+        try {
+            translate(messageBody);
+        } catch (Exception parseException) {
+            failureReporter.cannotTranslateMessage(sniperId, messageBody, parseException);
+            listener.auctionFailed();
+        }
+    }
+
+    public void translate(String message) {
+        AuctionEvent event = AuctionEvent.from(message);
 
         String type = event.type();
         if ("CLOSE".equals(type)) {
@@ -81,7 +94,13 @@ public class AuctionMessageTranslator implements MessageListener {
         }
 
         private String get(String fieldName) {
-            return fields.get(fieldName);
+            var value = fields.get(fieldName);
+
+            if (value == null) {
+                throw new MissingValueException(fieldName);
+            }
+
+            return value;
         }
 
         public AuctionEventListener.PriceSource isFrom(String sniperId) {
@@ -90,6 +109,12 @@ public class AuctionMessageTranslator implements MessageListener {
 
         private String bidder() {
             return get("Bidder");
+        }
+
+        private class MissingValueException extends RuntimeException {
+            public MissingValueException(String fieldName) {
+                super("Unable to parse field '" + fieldName + "' from message.");
+            }
         }
     }
 }

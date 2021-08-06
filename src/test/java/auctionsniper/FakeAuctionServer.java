@@ -75,6 +75,10 @@ public class FakeAuctionServer {
         assertThat(currentChat.getParticipant(), equalTo(sniperId));
     }
 
+    public void sendInvalidMessageContaining(String message) throws XMPPException {
+        currentChat.sendMessage(message);
+    }
+
     public static class SingleMessageListener implements MessageListener {
         private final ArrayBlockingQueue<Message> messages = new ArrayBlockingQueue<>(1);
 

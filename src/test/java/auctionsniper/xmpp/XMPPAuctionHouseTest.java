@@ -16,7 +16,7 @@ public class XMPPAuctionHouseTest {
     private XMPPAuctionHouse auctionHouse;
 
     @Before
-    public void openConnection() throws XMPPException {
+    public void openConnection() throws Exception {
         auctionHouse = XMPPAuctionHouse.connect(FakeAuctionServer.XMPP_HOSTNAME, ApplicationRunner.SNIPER_ID, ApplicationRunner.SNIPER_PASSWORD);
     }
 
@@ -57,6 +57,11 @@ public class XMPPAuctionHouseTest {
         return new AuctionEventListener() {
             public void auctionClosed() {
                 auctionWasClosed.countDown();
+            }
+
+            @Override
+            public void auctionFailed() {
+
             }
 
             public void currentPrice(int price, int increment, PriceSource priceSource) {
